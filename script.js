@@ -3,24 +3,21 @@
     let SNAKE = 1;
     let FOOD = 2;
     // [x,y] : x indice colonne ; y indice ligne
-    let x = 1;
+    let x = 0;
     let y = 0;
     let delay = 100;
     let FOODBODY = [];
     let SNAKEBODY = [];
 
-    await lireNiveau(1);
+   await lireNiveau(1);
 
     console.log(x);
     console.log(y);
 
-    // initialise le tableau WORLD avec des empty
+    // initialise le tableau WORLD
     let WORLD = new Array(x);
     for (let i = 0; i < x; i++) {
         WORLD[i] = new Array(y);
-        for (let j = 0; j < y; i++){
-            WORLD[i][j] = empty;
-        }
     }
 
     // placer SNAKEBODY dans WORLD
@@ -83,7 +80,7 @@
 
     async function lireNiveau(num){
         let url = "niveaux/niveau"+num+".json"
-        fetch(url).then(function(response){
+        let promesse = fetch(url).then(function(response){
             if (response.ok) {
                 return response.json();
             } else {
@@ -102,6 +99,6 @@
         }).catch(function(err){
             console.log(err);
         });
-    
+        return promesse;
     }
 })();
