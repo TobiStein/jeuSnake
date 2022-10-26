@@ -34,22 +34,8 @@
         WORLD[a][b] = FOOD;
     }
 
-    // canvas 
-    let canvas = document.getElementById('mycanvas');
-    canvas.setAttribute('width', 10 * x);
-    console.log(10 * x);
-    console.log(10 * y);
-    canvas.setAttribute('height', 10 * y);
-    let ctx = canvas.getContext('2d');
-
-    ctx.strokeStyle = "#264653";
-    ctx.strokeRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#2A9D8F";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#E9C46A";  
-    ctx.fillRect(4,6,4,4);
-    ctx.fillStyle = "#E76F51";  
-    ctx.fillRect(12,24,4,4);
+    draw();
+    
 
     // ajouter position à SNAKEBODY push
     // supprimer position à SNAKEBODY shift
@@ -100,5 +86,30 @@
             console.log(err);
         });
         return promesse;
+    }
+
+    function draw(){
+        // canvas 
+        let canvas = document.getElementById('mycanvas');
+        canvas.setAttribute('width', 20 * x);
+        canvas.setAttribute('height', 20 * y);
+        let ctx = canvas.getContext('2d');
+
+        // couleur du fond
+        ctx.fillStyle = "#2A9D8F";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < WORLD.length; i++){
+            for (let j = 0; j < WORLD.length; j++){
+                if (WORLD[i][j] == FOOD) {
+                    ctx.fillStyle = "#E76F51";  
+                    ctx.fillRect(i*20,j*20,20,20);
+                }
+                if (WORLD[i][j] == SNAKE) {
+                    ctx.fillStyle = "#E9C46A";  
+                    ctx.fillRect(i*20,j*20,20,20);
+                }
+            }
+        }
     }
 })();
