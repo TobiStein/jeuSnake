@@ -22,15 +22,15 @@
 
     // placer SNAKEBODY dans WORLD
     for (let i = 0; i < SNAKEBODY.length; i++){
-        let a = SNAKEBODY[i][0];
-        let b = SNAKEBODY[i][1];
+        let a = SNAKEBODY[i][1];
+        let b = SNAKEBODY[i][0];
         WORLD[a][b] = SNAKE;
     }
 
     // placer FOODBODY dans WORLD
     for (let i = 0; i < FOODBODY.length; i++){
-        let a = FOODBODY[i][0];
-        let b = FOODBODY[i][1];
+        let a = FOODBODY[i][1];
+        let b = FOODBODY[i][0];
         WORLD[a][b] = FOOD;
     }
 
