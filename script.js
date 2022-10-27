@@ -8,11 +8,9 @@
     let delay = 100;
     let FOODBODY = [];
     let SNAKEBODY = [];
+    let controle;
 
-   await lireNiveau(1);
-
-    console.log(x);
-    console.log(y);
+    await lireNiveau(1);
 
     // initialise le tableau WORLD
     let WORLD = new Array(x);
@@ -35,14 +33,26 @@
     }
 
     draw();
-    
 
     // ajouter position à SNAKEBODY push
+    function push(tete) {
+        let tempTab = new Array(SNAKEBODY.length + 1);
+        tempTab[0] = tete;
+        for(let i=1; i < tempTab.length; i++){
+            tempTab[i] = SNAKEBODY[i-1];
+        }
+        SNAKEBODY = tempTab;
+    }
+
     // supprimer position à SNAKEBODY shift
 
-    // passer l'evenement keydown en paramètre d'un listener
-    // enregistrer une de ces valeurs dans un attribut key
-    //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
+    //Listener
+    document.body.addEventListener('keydown', function(ev) {
+        controle = ev.key;
+        console.log(controle);
+        //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
+    });
+    
 
     // fonction step (prend en paramètre key)
     // fct step appeler à interval régulier (setInterval)
