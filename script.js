@@ -9,6 +9,7 @@
     let FOODBODY = [];
     let SNAKEBODY = [];
     let controle;
+    let savedkey;
 
     await lireNiveau(1);
 
@@ -45,6 +46,7 @@
             //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
         });
         step();
+        savedkey = controle;
     },delay);
     
     
@@ -52,28 +54,55 @@
     // fonction step (prend en paramètre key)
     // fct step appeler à interval régulier (setInterval)
     function step() {
+        // vérifie si ce sont les bonnes touches
         if (controle=="ArrowDown"||controle=="ArrowLeft"||controle=="ArrowRight"||controle=="ArrowUp"){
             let p;
             let p_x = SNAKEBODY[0][0];
             let p_y = SNAKEBODY[0][1];
 
-            if(controle=="ArrowDown"){ p = [p_x+1,p_y]; }
-            if(controle=="ArrowLeft"){ p = [p_x,p_y-1]; }
-            if(controle=="ArrowRight"){ p = [p_x,p_y+1]; }
-            if(controle=="ArrowUp"){ p = [p_x-1,p_y]; }
-            push(p);
-            shift();
+            // met à jour SNAKEBODY en fonction du déplacement
+            if(controle=="ArrowDown"){
+                if(savedkey!="ArrowUp"){
+                    p = [p_x+1,p_y]; 
+                    push(p);
+                    shift();
+                }else{
+                    controle="ArrowUp";
+                }
+            }
+            if(controle=="ArrowLeft"){ 
+                if(savedkey!="ArrowRight"){
+                    p = [p_x,p_y-1];
+                    push(p);
+                    shift(); 
+                }else{
+                    controle="ArrowRight";
+                }
+            }
+            if(controle=="ArrowRight"){ 
+                if(savedkey!="ArrowLeft"){
+                    p = [p_x,p_y+1];
+                    push(p);
+                    shift();  
+                }else{
+                    controle="ArrowLeft";
+                }
+            }
+            if(controle=="ArrowUp"){ 
+                if(savedkey!="ArrowDown"){
+                    p = [p_x-1,p_y];
+                    push(p);
+                    shift();   
+                }else{
+                    controle="ArrowDown";
+                }
+            }
+
             updateWorld();
             draw();
+
         }
     }
-
-    // TODO : step
-    // if key est diff et if pas d'obstacle : changer direction
-
-    // update position tête :
-    // si droite/gauche changer x de SNAKEBODY[0]
-    // si bas/droit changer y de SNAKEBODY[0]
 
     // verif :
     // position tête = position fruit score + 1 et SNAKEBODY + 1
