@@ -14,24 +14,8 @@
 
     // initialise le tableau WORLD
     let WORLD = new Array(x);
-    for (let i = 0; i < x; i++) {
-        WORLD[i] = new Array(y);
-    }
 
-    // placer SNAKEBODY dans WORLD
-    for (let i = 0; i < SNAKEBODY.length; i++){
-        let a = SNAKEBODY[i][1];
-        let b = SNAKEBODY[i][0];
-        WORLD[a][b] = SNAKE;
-    }
-
-    // placer FOODBODY dans WORLD
-    for (let i = 0; i < FOODBODY.length; i++){
-        let a = FOODBODY[i][1];
-        let b = FOODBODY[i][0];
-        WORLD[a][b] = FOOD;
-    }
-
+    updateWorld();
     draw();
 
     // ajouter position à SNAKEBODY
@@ -53,16 +37,36 @@
         SNAKEBODY = tempTab; 
     }
 
-    //Listener
-    document.body.addEventListener('keydown', function(ev) {
-        controle = ev.key;
-        console.log(controle);
-        //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
-    });
+    setInterval(function(){
+        //Listener
+        document.body.addEventListener('keydown', function(ev) {
+            controle = ev.key;
+            console.log(controle);
+            //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
+        });
+        step();
+    },delay);
+    
     
 
     // fonction step (prend en paramètre key)
     // fct step appeler à interval régulier (setInterval)
+    function step() {
+        if (controle=="ArrowDown"||controle=="ArrowLeft"||controle=="ArrowRight"||controle=="ArrowUp"){
+            let p;
+            let p_x = SNAKEBODY[0][0];
+            let p_y = SNAKEBODY[0][1];
+
+            if(controle=="ArrowDown"){ p = [p_x+1,p_y]; }
+            if(controle=="ArrowLeft"){ p = [p_x,p_y-1]; }
+            if(controle=="ArrowRight"){ p = [p_x,p_y+1]; }
+            if(controle=="ArrowUp"){ p = [p_x-1,p_y]; }
+            push(p);
+            shift();
+            updateWorld();
+            draw();
+        }
+    }
 
     // TODO : step
     // if key est diff et if pas d'obstacle : changer direction
@@ -112,6 +116,9 @@
         canvas.setAttribute('height', 20 * y);
         let ctx = canvas.getContext('2d');
 
+        //clear before draw
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
         // couleur du fond
         ctx.fillStyle = "#2A9D8F";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -127,6 +134,25 @@
                     ctx.fillRect(i*20,j*20,20,20);
                 }
             }
+        }
+    }
+
+    function updateWorld(){
+        for (let i = 0; i < x; i++) {
+            WORLD[i] = new Array(y);
+        }
+        // placer SNAKEBODY dans WORLD
+        for (let i = 0; i < SNAKEBODY.length; i++){
+            let a = SNAKEBODY[i][1];
+            let b = SNAKEBODY[i][0];
+            WORLD[a][b] = SNAKE;
+        }
+
+        // placer FOODBODY dans WORLD
+        for (let i = 0; i < FOODBODY.length; i++){
+            let a = FOODBODY[i][1];
+            let b = FOODBODY[i][0];
+            WORLD[a][b] = FOOD;
         }
     }
 })();
