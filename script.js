@@ -34,7 +34,7 @@
 
     draw();
 
-    // ajouter position à SNAKEBODY push
+    // ajouter position à SNAKEBODY
     function push(tete) {
         let tempTab = new Array(SNAKEBODY.length + 1);
         tempTab[0] = tete;
@@ -45,6 +45,13 @@
     }
 
     // supprimer position à SNAKEBODY shift
+    function shift(){
+        let tempTab = new Array(SNAKEBODY.length - 1);
+        for(let i=0; i < tempTab.length; i++){
+            tempTab[i] = SNAKEBODY[i];
+        }
+        SNAKEBODY = tempTab; 
+    }
 
     //Listener
     document.body.addEventListener('keydown', function(ev) {
