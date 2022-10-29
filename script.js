@@ -10,38 +10,38 @@
     let SNAKEBODY = [];
     let controle;
     let savedkey;
+    let finDePartie = 0;
 
     await lireNiveau(1);
 
     // initialise le tableau WORLD
     let WORLD = new Array(x);
-    for (let i = 0; i < x; i++) {
-        WORLD[i] = new Array(y);
-    }
-    // placer SNAKEBODY dans WORLD
-    for (let i = 0; i < SNAKEBODY.length; i++){
-        let a = SNAKEBODY[i][0];
-        let b = SNAKEBODY[i][1];
-        WORLD[a][b] = SNAKE;
-    }
+    
+    updateWorld();
 
-    // placer FOODBODY dans WORLD
-    for (let i = 0; i < FOODBODY.length; i++){
-        let a = FOODBODY[i][1];
-        let b = FOODBODY[i][0];
-        WORLD[a][b] = FOOD;
-    }
-
+    // canvas 
+    let canvas = document.getElementById('mycanvas');
+    canvas.setAttribute('width', 20 * x);
+    canvas.setAttribute('height', 20 * y);
     draw();
 
-    setInterval(function(){
+    let game = setInterval(function(){
         //Listener
         document.body.addEventListener('keydown', function(ev) {
             controle = ev.key;
-            console.log(controle);
             //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
         });
         step();
+        if (finDePartie === 1) {
+            console.log("finDePartie");
+            let ctx = canvas.getContext('2d');
+            //clear before draw
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // couleur du fond
+            ctx.fillStyle = "#E76F51";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            clearInterval(game);
+        }
         savedkey = controle;
     },delay);
     
@@ -61,12 +61,8 @@
             if(controle==="ArrowDown"){
                 if(savedkey!=="ArrowUp"){
                     p = [p_x,p_y+1];
-                    let p2 = [p_x,p_y-2];
+                    let p2 = [p_x,p_y+2];
                     verif(p,p2);
-                    SNAKEBODY.push(p);
-                    updateWorld(p,SNAKE)
-                    let effacer = SNAKEBODY.shift();
-                    updateWorld(effacer,[]); 
                 }else{
                     controle="ArrowUp";
                 }
@@ -74,12 +70,8 @@
             if(controle==="ArrowLeft"){ 
                 if(savedkey!=="ArrowRight"){
                     p = [p_x-1,p_y];
-                    let p2 = [p_x,p_y-2];
+                    let p2 = [p_x-2,p_y];
                     verif(p,p2);
-                    SNAKEBODY.push(p);
-                    updateWorld(p,SNAKE)
-                    let effacer = SNAKEBODY.shift();
-                    updateWorld(effacer,[]); 
                 }else{
                     controle="ArrowRight";
                 }
@@ -87,12 +79,8 @@
             if(controle==="ArrowRight"){ 
                 if(savedkey!=="ArrowLeft"){
                     p = [p_x+1,p_y];
-                    let p2 = [p_x,p_y-2];
-                    verif(p,p2);
-                    SNAKEBODY.push(p);
-                    updateWorld(p,SNAKE)
-                    let effacer = SNAKEBODY.shift();
-                    updateWorld(effacer,[]);   
+                    let p2 = [p_x+2,p_y];
+                    verif(p,p2);   
                 }else{
                     controle="ArrowLeft";
                 }
@@ -102,21 +90,14 @@
                     p = [p_x,p_y-1];
                     let p2 = [p_x,p_y-2];
                     verif(p,p2);
-                    SNAKEBODY.push(p);
-                    updateWorld(p,SNAKE);
-                    let effacer = SNAKEBODY.shift();
-                    updateWorld(effacer,[]);  
                 }else{
                     controle="ArrowDown";
                 }
             }
+            updateWorld()
             draw();
 
         }
-    }
-
-    function updateWorld(p,value){
-        WORLD[p[0]][p[1]] = value;
     }
 
     // verif :
@@ -124,17 +105,17 @@
     // position tête = position mur, serpent ou limite monde = fin de partie
     function verif(p,p2) {
         if(WORLD[p[0]][p[1]] === FOOD){
-            WORLD[p[0]][p[1]] = [];
+            FOODBODY.shift();
+            SNAKEBODY.push(p);
             SNAKEBODY.push(p2);
-            updateWorld(p2,SNAKE);
+            SNAKEBODY.shift(); 
+        } else if(WORLD[p[0]][p[1]] === SNAKE){
+            finDePartie = 1;
+        } else {
+            SNAKEBODY.push(p);
+            SNAKEBODY.shift();
         }
     }
-
-    // update SNAKEBODY
-    // update WORLD
-
-    // Effacer canvas
-    // redessiner canvas
 
     async function lireNiveau(num){
         let url = "niveaux/niveau"+num+".json"
@@ -148,8 +129,6 @@
             // récupère les infos du json
             x = data.dimensions[0];
             y = data.dimensions[1];
-            console.log(x);
-            console.log(y);
             SNAKEBODY = data.snake;
             FOODBODY = data.food;
             delay = data.delay;
@@ -161,10 +140,6 @@
     }
 
     function draw(){
-        // canvas 
-        let canvas = document.getElementById('mycanvas');
-        canvas.setAttribute('width', 20 * x);
-        canvas.setAttribute('height', 20 * y);
         let ctx = canvas.getContext('2d');
 
         //clear before draw
@@ -185,6 +160,25 @@
                     ctx.fillRect(i*20,j*20,20,20);
                 }
             }
+        }
+    }
+
+    function updateWorld(){
+        for (let i = 0; i < x; i++) {
+            WORLD[i] = new Array(y);
+        }
+        // placer SNAKEBODY dans WORLD
+        for (let i = 0; i < SNAKEBODY.length; i++){
+            let a = SNAKEBODY[i][0];
+            let b = SNAKEBODY[i][1];
+            WORLD[a][b] = SNAKE;
+        }
+    
+        // placer le premier dans FOODBODY dans WORLD
+        if(FOODBODY.length!==0){
+            let a = FOODBODY[0][0];
+            let b = FOODBODY[0][1];
+            WORLD[a][b] = FOOD;
         }
     }
 })();
