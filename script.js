@@ -13,33 +13,37 @@
     let score = 0;
     let htmlscore = document.getElementById("score");
 
-    await lireNiveau(1);
-
     // initialise le tableau WORLD
     let WORLD = new Array(x);
-    
-    updateWorld();
 
     // canvas 
     let canvas = document.getElementById('mycanvas');
-    canvas.setAttribute('width', 20 * x);
-    canvas.setAttribute('height', 20 * y);
-    draw();
+    
+    document.getElementById("play").addEventListener('click', async function(){
+        let e = document.getElementById("level-select");
+        let value = e.value;
+        await lireNiveau(value);
 
-    // boucle tant que la partie n'est pas terminée
-    let game = setInterval(function(){
-        //Listener
-        document.body.addEventListener('keydown', function(ev) {
-            controle = ev.key;
-            //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
-        });
-        step();
-        if (finDePartie !== 0){
-            finGame();
-            clearInterval(game);
-        }
-        savedkey = controle;
-    },delay);
+        document.getElementById('game').classList.toggle('invisible');
+        
+        updateWorld();
+        draw();
+
+        // boucle tant que la partie n'est pas terminée
+        let game = setInterval(function(){
+            //Listener
+            document.body.addEventListener('keydown', function(ev) {
+                controle = ev.key;
+                //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
+            });
+            step();
+            if (finDePartie !== 0){
+                finGame();
+                clearInterval(game);
+            }
+            savedkey = controle;
+        },delay);
+    });
 
     function finGame() {
         if (finDePartie === 1) {
@@ -169,12 +173,12 @@
                 if (WORLD[i][j] === FOOD) {
                     // couleur nourriture
                     ctx.fillStyle = "#E76F51";  
-                    ctx.fillRect(i*20,j*20,20,20);
+                    ctx.fillRect(i*(canvas.width/x),j*(canvas.height/y),canvas.width/x,canvas.height/y);
                 }
                 if (WORLD[i][j] === SNAKE) {
                     // couleur serpent
                     ctx.fillStyle = "#E9C46A";  
-                    ctx.fillRect(i*20,j*20,20,20);
+                    ctx.fillRect(i*(canvas.width/x),j*(canvas.height/y),canvas.width/x,canvas.height/y);
                 }
             }
         }

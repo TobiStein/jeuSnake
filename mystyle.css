@@ -1,5 +1,95 @@
-#game {
+body {
+    position: relative;
+    
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: #264653;
+}
+
+#acceuil {
+    padding-top: 30px;
+    position: absolute;
+    z-index: 1;
+    
+    display: flex;
+    flex-direction: column;
+
+    width: 500px;
+    height: 600px;
+    background-color: #e9c46a;
+    padding-left: 16px;
+}
+
+#game {
+    padding-top: 30px;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#victory {
+    padding-top: 20px;
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#gameover {
+    padding-top: 20px;
+    position: absolute;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.title {
+    align-self: center;
+    font-size: 60px;
+}
+
+.myButton {
+    margin-top: 60px;
+    align-self: center;
+	background-color:#e76f51;
+	border-radius:28px;
+	border:1px solid #e76f51;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #d13f1b;
+}
+.myButton:hover {
+	background-color:#d13f1b;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+#gameover .myButton {
+    background-color:#264653;
+	border:1px solid #264653;
+    text-shadow:0px 1px 0px #264653;
+}
+
+#gameover .myButton:hover {
+	background-color:#2a9d8f;
+}
+
+.image {
+    filter : drop-shadow(5px 10px 0px #264653);
+}
+.invisible {
+    visibility: hidden;
 }

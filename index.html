@@ -6,16 +6,49 @@
         <title>Jeu snake</title>
     </head>
     <body>
-        <div id="acceuil">
 
+        <div id="acceuil">
+            <p class="title">SNAKE</p>
+
+            <div>
+                <label for="level-select">select a level :</label>
+                <select name="niveau" id="level-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+            </div>
+
+            <P>ou</P>
+
+            <div>
+                <label for="neverend">Never ending mode :</label>
+                <input type="checkbox" id="neverend" name="neverend">
+            </div>
+            
+            <button class="myButton" id="play">play</button>
         </div>
-        <div id="game">
-            <canvas id="mycanvas" width="" height=""></canvas>
+
+        <div id="game" class="invisible">
+            <canvas id="mycanvas" width="500" height="500"></canvas>
             <p id="score">SCORE : 0</p>
         </div>
-        <script src="script.js"></script>
-        <div id="endgame">
 
+        <div id="victory" class="invisible">
+            <p class="title">YOU WIN !</p>
+            <img class="image" src="./trophy-18.png" alt="trophy" width="200" height="200">
+            <button class="myButton" id="replay">play again ?</button>
         </div>
+
+        <div id="gameover" class="invisible">
+            <p class="title">YOU LOSE !</p>
+            <img class="image" src="./NicePng_snake-cartoon-png_1033774.png" alt="snake" width="200" height="200">
+            <button class="myButton" id="try">try again ?</button>
+        </div>
+
+        <script src="script.js"></script>
     </body>
 </html>
