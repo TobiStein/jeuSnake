@@ -61,7 +61,8 @@
             if(controle==="ArrowDown"){
                 if(savedkey!=="ArrowUp"){
                     p = [p_x,p_y+1];
-                    verif(p);
+                    let p2 = [p_x,p_y-2];
+                    verif(p,p2);
                     SNAKEBODY.push(p);
                     updateWorld(p,SNAKE)
                     let effacer = SNAKEBODY.shift();
@@ -73,7 +74,8 @@
             if(controle==="ArrowLeft"){ 
                 if(savedkey!=="ArrowRight"){
                     p = [p_x-1,p_y];
-                    verif(p);
+                    let p2 = [p_x,p_y-2];
+                    verif(p,p2);
                     SNAKEBODY.push(p);
                     updateWorld(p,SNAKE)
                     let effacer = SNAKEBODY.shift();
@@ -85,7 +87,8 @@
             if(controle==="ArrowRight"){ 
                 if(savedkey!=="ArrowLeft"){
                     p = [p_x+1,p_y];
-                    verif(p);
+                    let p2 = [p_x,p_y-2];
+                    verif(p,p2);
                     SNAKEBODY.push(p);
                     updateWorld(p,SNAKE)
                     let effacer = SNAKEBODY.shift();
@@ -97,7 +100,8 @@
             if(controle==="ArrowUp"){ 
                 if(savedkey!=="ArrowDown"){
                     p = [p_x,p_y-1];
-                    verif(p);
+                    let p2 = [p_x,p_y-2];
+                    verif(p,p2);
                     SNAKEBODY.push(p);
                     updateWorld(p,SNAKE);
                     let effacer = SNAKEBODY.shift();
@@ -118,10 +122,11 @@
     // verif :
     // position tête = position fruit score + 1 et SNAKEBODY + 1
     // position tête = position mur, serpent ou limite monde = fin de partie
-    function verif(p) {
+    function verif(p,p2) {
         if(WORLD[p[0]][p[1]] === FOOD){
             WORLD[p[0]][p[1]] = [];
-            console.log("dans le if")
+            SNAKEBODY.push(p2);
+            updateWorld(p2,SNAKE);
         }
     }
 
