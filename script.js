@@ -11,6 +11,7 @@
     let savedkey;
     let finDePartie = 0;
     let score = 0;
+    let htmlscore = document.getElementById("score");
 
     await lireNiveau(1);
 
@@ -115,6 +116,7 @@
         }else{
             if(WORLD[p[0]][p[1]] === FOOD){
                 score += 1;
+                htmlscore.textContent = "SCORE : "+score;
                 FOODBODY.shift();
                 SNAKEBODY.push(p);
                 SNAKEBODY.push(p2);
