@@ -15,28 +15,24 @@
 
     // initialise le tableau WORLD
     let WORLD = new Array(x);
+    for (let i = 0; i < x; i++) {
+        WORLD[i] = new Array(y);
+    }
+    // placer SNAKEBODY dans WORLD
+    for (let i = 0; i < SNAKEBODY.length; i++){
+        let a = SNAKEBODY[i][0];
+        let b = SNAKEBODY[i][1];
+        WORLD[a][b] = SNAKE;
+    }
 
-    updateWorld();
+    // placer FOODBODY dans WORLD
+    for (let i = 0; i < FOODBODY.length; i++){
+        let a = FOODBODY[i][1];
+        let b = FOODBODY[i][0];
+        WORLD[a][b] = FOOD;
+    }
+
     draw();
-
-    // ajouter position à SNAKEBODY
-    function push(tete) {
-        let tempTab = new Array(SNAKEBODY.length + 1);
-        tempTab[0] = tete;
-        for(let i=1; i < tempTab.length; i++){
-            tempTab[i] = SNAKEBODY[i-1];
-        }
-        SNAKEBODY = tempTab;
-    }
-
-    // supprimer position à SNAKEBODY shift
-    function shift(){
-        let tempTab = new Array(SNAKEBODY.length - 1);
-        for(let i=0; i < tempTab.length; i++){
-            tempTab[i] = SNAKEBODY[i];
-        }
-        SNAKEBODY = tempTab; 
-    }
 
     setInterval(function(){
         //Listener
@@ -55,58 +51,79 @@
     // fct step appeler à interval régulier (setInterval)
     function step() {
         // vérifie si ce sont les bonnes touches
-        if (controle=="ArrowDown"||controle=="ArrowLeft"||controle=="ArrowRight"||controle=="ArrowUp"){
+        if (controle==="ArrowDown"||controle==="ArrowLeft"||controle==="ArrowRight"||controle==="ArrowUp"){
             let p;
-            let p_x = SNAKEBODY[0][0];
-            let p_y = SNAKEBODY[0][1];
+            let indice = SNAKEBODY.length - 1;
+            let p_x = SNAKEBODY[indice][0];
+            let p_y = SNAKEBODY[indice][1];
 
             // met à jour SNAKEBODY en fonction du déplacement
-            if(controle=="ArrowDown"){
-                if(savedkey!="ArrowUp"){
-                    p = [p_x+1,p_y]; 
-                    push(p);
-                    shift();
+            if(controle==="ArrowDown"){
+                if(savedkey!=="ArrowUp"){
+                    p = [p_x,p_y+1];
+                    verif(p);
+                    SNAKEBODY.push(p);
+                    updateWorld(p,SNAKE)
+                    let effacer = SNAKEBODY.shift();
+                    updateWorld(effacer,[]); 
                 }else{
                     controle="ArrowUp";
                 }
             }
-            if(controle=="ArrowLeft"){ 
-                if(savedkey!="ArrowRight"){
-                    p = [p_x,p_y-1];
-                    push(p);
-                    shift(); 
+            if(controle==="ArrowLeft"){ 
+                if(savedkey!=="ArrowRight"){
+                    p = [p_x-1,p_y];
+                    verif(p);
+                    SNAKEBODY.push(p);
+                    updateWorld(p,SNAKE)
+                    let effacer = SNAKEBODY.shift();
+                    updateWorld(effacer,[]); 
                 }else{
                     controle="ArrowRight";
                 }
             }
-            if(controle=="ArrowRight"){ 
-                if(savedkey!="ArrowLeft"){
-                    p = [p_x,p_y+1];
-                    push(p);
-                    shift();  
+            if(controle==="ArrowRight"){ 
+                if(savedkey!=="ArrowLeft"){
+                    p = [p_x+1,p_y];
+                    verif(p);
+                    SNAKEBODY.push(p);
+                    updateWorld(p,SNAKE)
+                    let effacer = SNAKEBODY.shift();
+                    updateWorld(effacer,[]);   
                 }else{
                     controle="ArrowLeft";
                 }
             }
-            if(controle=="ArrowUp"){ 
-                if(savedkey!="ArrowDown"){
-                    p = [p_x-1,p_y];
-                    push(p);
-                    shift();   
+            if(controle==="ArrowUp"){ 
+                if(savedkey!=="ArrowDown"){
+                    p = [p_x,p_y-1];
+                    verif(p);
+                    SNAKEBODY.push(p);
+                    updateWorld(p,SNAKE);
+                    let effacer = SNAKEBODY.shift();
+                    updateWorld(effacer,[]);  
                 }else{
                     controle="ArrowDown";
                 }
             }
-
-            updateWorld();
             draw();
 
         }
     }
 
+    function updateWorld(p,value){
+        WORLD[p[0]][p[1]] = value;
+    }
+
     // verif :
     // position tête = position fruit score + 1 et SNAKEBODY + 1
     // position tête = position mur, serpent ou limite monde = fin de partie
+    function verif(p) {
+        if(WORLD[p[0]][p[1]] === FOOD){
+            WORLD[p[0]][p[1]] = [];
+            console.log("dans le if")
+        }
+    }
 
     // update SNAKEBODY
     // update WORLD
@@ -154,34 +171,15 @@
 
         for (let i = 0; i < WORLD.length; i++){
             for (let j = 0; j < WORLD.length; j++){
-                if (WORLD[i][j] == FOOD) {
+                if (WORLD[i][j] === FOOD) {
                     ctx.fillStyle = "#E76F51";  
                     ctx.fillRect(i*20,j*20,20,20);
                 }
-                if (WORLD[i][j] == SNAKE) {
+                if (WORLD[i][j] === SNAKE) {
                     ctx.fillStyle = "#E9C46A";  
                     ctx.fillRect(i*20,j*20,20,20);
                 }
             }
-        }
-    }
-
-    function updateWorld(){
-        for (let i = 0; i < x; i++) {
-            WORLD[i] = new Array(y);
-        }
-        // placer SNAKEBODY dans WORLD
-        for (let i = 0; i < SNAKEBODY.length; i++){
-            let a = SNAKEBODY[i][1];
-            let b = SNAKEBODY[i][0];
-            WORLD[a][b] = SNAKE;
-        }
-
-        // placer FOODBODY dans WORLD
-        for (let i = 0; i < FOODBODY.length; i++){
-            let a = FOODBODY[i][1];
-            let b = FOODBODY[i][0];
-            WORLD[a][b] = FOOD;
         }
     }
 })();
