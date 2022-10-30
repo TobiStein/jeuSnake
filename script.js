@@ -4,14 +4,15 @@
     let FOOD = 2;
     let x = 0;
     let y = 0;
-    let delay = 100;
+    let delay = 150;
     let FOODBODY = [];
     let SNAKEBODY = [];
     let controle;
     let savedkey;
-    let finDePartie = 0;
+    let endOfGame = 0;
     let score = 0;
     let htmlscore = document.getElementById("score");
+    let neverendMode = 0;
 
     // initialise le tableau WORLD
     let WORLD = new Array(x);
@@ -22,18 +23,32 @@
     // bouton pour commencer une partie
     document.getElementById("play").addEventListener('click', async function(){
         // réinitialiser les valeurs
+        neverendMode = 0
         controle = 0;
         savedkey = 0;
-        finDePartie = 0;
+        endOfGame = 0;
         score = 0;
         htmlscore.textContent = "SCORE : "+score;
 
-        // prendre les données du niveau sélectionné
-        let e = document.getElementById("level-select");
-        let value = e.value;
-        await lireNiveau(value);
+        let neverend = document.getElementById('neverend');
+        if(neverend.checked){
+            // si mode sans fin selectionnée :
+            x = 20;
+            y = 20;
+            // récupère delay selon l'option de difficulté sélectionné
+            let e = document.getElementById("difficulty");
+            delay = e.value;
+            FOODBODY = [[10,10]];
+            SNAKEBODY = [[2,1],[3,1],[4,1],[4,2]];
+            neverendMode = 1
+        }else{
+            // prendre les données du niveau sélectionné
+            let e = document.getElementById("level-select");
+            let value = e.value;
+            await readLevel(value);
+        }
 
-        // lancer le jeu
+        // lance le jeu
         document.getElementById('game').classList.remove('invisible');
         play();
     });
@@ -49,11 +64,11 @@
         document.getElementById('victory').classList.add('invisible');
         document.getElementById('game').classList.add('invisible');
     });
-    
+
     function play(){
         updateWorld();
         draw();
-
+        
         // boucle tant que la partie n'est pas terminée
         let game = setInterval(function(){
             //Listener
@@ -62,24 +77,24 @@
                 //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
             });
             step();
-            console.log(finDePartie);
-            if (finDePartie !== 0){
-                console.log("fin --------");
-                finGame();
+            if (endOfGame !== 0){
+                endGame();
                 clearInterval(game);
             }
             savedkey = controle;
         },delay);
     }
 
-    function finGame() {
-        if (finDePartie === 1) {
+    function endGame() {
+        if (endOfGame === 1) {
+            // si on a perdu
             let ctx = canvas.getContext('2d');
             ctx.fillStyle = "#E76F51";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             document.getElementById('gameover').classList.remove('invisible');
         }
-        if (finDePartie === 2) {
+        if (endOfGame === 2) {
+            // si on a gagné
             let ctx = canvas.getContext('2d');
             ctx.fillStyle = "#E9C46A";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -134,32 +149,46 @@
                     controle="ArrowDown";
                 }
             }
+            // met à jour le tableau WORLD et redessine
             updateWorld()
             draw();
         } else {
+            // pour éviter qu'appuyer sur une autre touche arrête le jeu
             controle = savedkey;
         }
+    }
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
     }
 
     // verif :
     // p = position future et p2 = position a ajouter s'il mange qqch
     function verif(p,p2) {
         if(FOODBODY.length === 0){
-            finDePartie = 2;
+            endOfGame = 2;
         }else{
             if(p[0] < 0 || p[0] >= x || p[1] < 0 || p[1] >= y){
-                console.log("condition des limites");
-                finDePartie = 1;
+                endOfGame = 1;
             } else if(WORLD[p[0]][p[1]] === FOOD){
                 score += 1;
                 htmlscore.textContent = "SCORE : "+score;
+                if(neverendMode === 1){
+                    let aleatoire = getRandomInt(1);
+                    let fruit
+                    if(aleatoire===1){
+                        fruit = [getRandomInt(19),getRandomInt(20)];
+                    } else {
+                        fruit = [getRandomInt(20),getRandomInt(19)];
+                    }
+                    FOODBODY.push(fruit);
+                }
                 FOODBODY.shift();
                 SNAKEBODY.push(p);
                 SNAKEBODY.push(p2);
                 SNAKEBODY.shift(); 
             } else if(WORLD[p[0]][p[1]] === SNAKE){
-                console.log("condition du snake");
-                finDePartie = 1;
+                endOfGame = 1;
             } else {
                 SNAKEBODY.push(p);
                 SNAKEBODY.shift();
@@ -167,7 +196,7 @@
         }
     }
 
-    async function lireNiveau(num){
+    async function readLevel(num){
         let url = "niveaux/niveau"+num+".json"
         let promesse = fetch(url).then(function(response){
             if (response.ok) {
