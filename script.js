@@ -18,14 +18,39 @@
 
     // canvas 
     let canvas = document.getElementById('mycanvas');
-    
+
+    // bouton pour commencer une partie
     document.getElementById("play").addEventListener('click', async function(){
+        // réinitialiser les valeurs
+        controle = 0;
+        savedkey = 0;
+        finDePartie = 0;
+        score = 0;
+        htmlscore.textContent = "SCORE : "+score;
+
+        // prendre les données du niveau sélectionné
         let e = document.getElementById("level-select");
         let value = e.value;
         await lireNiveau(value);
 
-        document.getElementById('game').classList.toggle('invisible');
-        
+        // lancer le jeu
+        document.getElementById('game').classList.remove('invisible');
+        play();
+    });
+
+    // bouton pour recommencer une partie après avoir perdu
+    document.getElementById("try").addEventListener('click', function(){
+        document.getElementById('gameover').classList.add('invisible');
+        document.getElementById('game').classList.add('invisible');
+    });
+
+    // bouton pour recommencer une partie après avoir gagné
+    document.getElementById("replay").addEventListener('click', function(){
+        document.getElementById('victory').classList.add('invisible');
+        document.getElementById('game').classList.add('invisible');
+    });
+    
+    function play(){
         updateWorld();
         draw();
 
@@ -37,24 +62,28 @@
                 //  "ArrowDown", "ArrowLeft", "ArrowRight" et "ArrowUp"
             });
             step();
+            console.log(finDePartie);
             if (finDePartie !== 0){
+                console.log("fin --------");
                 finGame();
                 clearInterval(game);
             }
             savedkey = controle;
         },delay);
-    });
+    }
 
     function finGame() {
         if (finDePartie === 1) {
             let ctx = canvas.getContext('2d');
             ctx.fillStyle = "#E76F51";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('gameover').classList.remove('invisible');
         }
         if (finDePartie === 2) {
             let ctx = canvas.getContext('2d');
             ctx.fillStyle = "#E9C46A";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('victory').classList.remove('invisible');
         }
     }
     
@@ -118,7 +147,10 @@
         if(FOODBODY.length === 0){
             finDePartie = 2;
         }else{
-            if(WORLD[p[0]][p[1]] === FOOD){
+            if(p[0] < 0 || p[0] >= x || p[1] < 0 || p[1] >= y){
+                console.log("condition des limites");
+                finDePartie = 1;
+            } else if(WORLD[p[0]][p[1]] === FOOD){
                 score += 1;
                 htmlscore.textContent = "SCORE : "+score;
                 FOODBODY.shift();
@@ -126,8 +158,7 @@
                 SNAKEBODY.push(p2);
                 SNAKEBODY.shift(); 
             } else if(WORLD[p[0]][p[1]] === SNAKE){
-                finDePartie = 1;
-            } else if(p[0] < 0 || p[0] >= x || p[1] < 0 || p[1] >= y){
+                console.log("condition du snake");
                 finDePartie = 1;
             } else {
                 SNAKEBODY.push(p);
