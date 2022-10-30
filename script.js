@@ -2,11 +2,13 @@
 
     let SNAKE = 1;
     let FOOD = 2;
+    let WALL = 3;
     let x = 0;
     let y = 0;
     let delay = 150;
     let FOODBODY = [];
     let SNAKEBODY = [];
+    let WALLBODY = null;
     let controle;
     let savedkey;
     let endOfGame = 0;
@@ -187,7 +189,7 @@
                 SNAKEBODY.push(p);
                 SNAKEBODY.push(p2);
                 SNAKEBODY.shift(); 
-            } else if(WORLD[p[0]][p[1]] === SNAKE){
+            } else if(WORLD[p[0]][p[1]] === SNAKE || WORLD[p[0]][p[1]] === WALL){
                 endOfGame = 1;
             } else {
                 SNAKEBODY.push(p);
@@ -210,6 +212,7 @@
             y = data.dimensions[1];
             SNAKEBODY = data.snake;
             FOODBODY = data.food;
+            WALLBODY = data.walls;
             delay = data.delay;
     
         }).catch(function(err){
@@ -240,6 +243,11 @@
                     ctx.fillStyle = "#E9C46A";  
                     ctx.fillRect(i*(canvas.width/x),j*(canvas.height/y),canvas.width/x,canvas.height/y);
                 }
+                if (WORLD[i][j] === WALL) {
+                    // couleur mur
+                    ctx.fillStyle = "#d13f1b";  
+                    ctx.fillRect(i*(canvas.width/x),j*(canvas.height/y),canvas.width/x,canvas.height/y);
+                }
             }
         }
     }
@@ -260,6 +268,15 @@
             let a = FOODBODY[0][0];
             let b = FOODBODY[0][1];
             WORLD[a][b] = FOOD;
+        }
+
+        // placer les murs dans WORLD s'il y en a
+        if(WALLBODY!==null){
+            for (let i = 0; i < WALLBODY.length; i++){
+                let a = WALLBODY[i][0];
+                let b = WALLBODY[i][1];
+                WORLD[a][b] = WALL;
+            }
         }
     }
 })();
