@@ -42,6 +42,7 @@
             delay = e.value;
             FOODBODY = [[10,10]];
             SNAKEBODY = [[2,1],[3,1],[4,1],[4,2]];
+            WALLBODY = null;
             neverendMode = 1
         }else{
             // prendre les données du niveau sélectionné
